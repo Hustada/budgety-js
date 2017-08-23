@@ -43,6 +43,8 @@ var budgetController = (function() {
 		}
 	};
 
+	//changes
+
 	return {
 		addItem: function(type, des, val) {
 			var newItem;
