@@ -92,7 +92,9 @@ var UIController = (function() {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
-		inputBtn: '.add__btn'
+		inputBtn: '.add__btn',
+		incomeContainer: '.income__list',
+		expensesContainer: '.expenses__list'
 	};
 
 	return {
@@ -100,9 +102,53 @@ var UIController = (function() {
 			return {
 			type: document.querySelector(DOMstrings.inputType).value, // will be either inc or exp
 			description: document.querySelector(DOMstrings.inputDescription).value,
-			value: document.querySelector(DOMstrings.inputValue).value
+			//use parseFloat to convert string to integer
+			value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
 			}
 		},
+
+		addListItem: function(obj, type) {
+			var html;
+			// Create HTML String with placeholder text
+			if (type === 'inc') {
+				element = DOMstrings.incomeContainer;
+
+				html = '<div class="item clearfix" id="income-%id&"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+			} else if (type === 'exp') {
+				element = DOMstrings.expensesContainer;
+
+				html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+			}
+
+			//Replace the placeholder text with some actual data
+			newHtml = html.replace('%id%', obj.id);
+			newHtml = newHtml.replace('%description%', obj.description);
+			newHtml = newHtml.replace('%value%', obj.value);
+
+			//Insert the HTML into the DOM
+			document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+		},
+
+		clearFields: function() {
+			var fields, fieldsArr;
+
+			// Like CSS selecting. Separate different selectors with comma and then join together
+			fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+
+			// Call slice method using call method
+			fieldsArr = Array.prototype.slice.call(fields);
+
+			// can recieve three args. access to current value, index, and entire array
+
+			fieldsArr.forEach(function(current, index, array) {
+				// clear all fields
+				current.value = "";
+			});
+
+			// return focus back to description field
+			fieldsArr[0].focus();
+		},
+
 		getDOMstrings: function() {
 			return DOMstrings;
 		}
@@ -129,6 +175,17 @@ var controller = (function(budgetCtrl, UICtrl) {
 		});
 	};
 
+	var updateBudget = function() {
+
+		// 1. Calculate budget
+
+
+		// 2. Return the budget
+
+		// 3. Display the budget on the UI
+
+	};
+
 	var ctrlAddItem = function() {
 		var input, newItem;
 
@@ -139,8 +196,13 @@ var controller = (function(budgetCtrl, UICtrl) {
 		newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
 		// 3. Add the new item to the user interface
+		UICtrl.addListItem(newItem, input.type);
+
+		// 4. Clear the fields using clear fields function
+		UICtrl.clearFields();
 
 		// 4. Calculate the budget
+		updateBudget();
 
 		// 5. Display the budget on the UI
 	};
@@ -153,7 +215,7 @@ var controller = (function(budgetCtrl, UICtrl) {
 
 
 })(budgetController, UIController);
-
+	console.log('Application has Started')
 controller.init();
 
 
